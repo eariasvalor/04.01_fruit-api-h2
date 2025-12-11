@@ -24,7 +24,7 @@ COPY --from=builder --chown=appuser:appgroup /app/target/*.jar app.jar
 
 USER appuser
 
-EXPOSE 8080
+EXPOSE 9000
 
 ENV SPRING_PROFILES_ACTIVE=prod
 ENV JAVA_OPTS="-Xms256m -Xmx512m"
