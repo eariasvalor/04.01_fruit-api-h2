@@ -1,4 +1,4 @@
-package cat.itacademy.s04.s02.n01.fruit;
+package cat.itacademy.s04.s02.n01.fruit.repository;
 
 
 import cat.itacademy.s04.s02.n01.fruit.model.Fruit;
