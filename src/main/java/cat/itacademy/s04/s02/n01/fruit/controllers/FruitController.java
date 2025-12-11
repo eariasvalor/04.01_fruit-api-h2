@@ -30,4 +30,10 @@ public class FruitController {
         List<FruitResponseDTO> fruits = fruitService.getAllFruits();
         return ResponseEntity.ok(fruits);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<FruitResponseDTO> getFruitById(@PathVariable Long id) {
+        FruitResponseDTO fruit = fruitService.getFruitById(id);
+        return ResponseEntity.ok(fruit);
+    }
 }

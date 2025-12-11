@@ -2,6 +2,7 @@ package cat.itacademy.s04.s02.n01.fruit.controllers;
 
 
 import cat.itacademy.s04.s02.n01.fruit.dto.FruitRequestDTO;
+import cat.itacademy.s04.s02.n01.fruit.dto.FruitResponseDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -114,6 +115,41 @@ public class FruitControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)))
                 .andExpect(jsonPath("$", is(empty())));
+    }
+
+    @Test
+    @DisplayName("GET /fruits/{id} - must return a fruit with 200 OK")
+    void testGetFruitById_Success() throws Exception {
+        FruitRequestDTO request = new FruitRequestDTO("Poma", 5);
+
+        String response = mockMvc.perform(post("/fruits")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        FruitResponseDTO createdFruit = objectMapper.readValue(
+                response, FruitResponseDTO.class);
+        Long fruitId = createdFruit.getId();
+
+        mockMvc.perform(get("/fruits/" + fruitId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(fruitId))
+                .andExpect(jsonPath("$.name").value("Poma"))
+                .andExpect(jsonPath("$.weightInKilos").value(5));
+    }
+
+    @Test
+    @DisplayName("GET /fruits/{id} - must return 404 Not Found if it doesn't exist")
+    void testGetFruitById_NotFound() throws Exception {
+                Long nonExistentId = 999L;
+
+        mockMvc.perform(get("/fruits/" + nonExistentId))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.message").value(
+                        containsString("Fruit not found")));
     }
 
 }
