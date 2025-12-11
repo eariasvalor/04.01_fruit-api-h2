@@ -1,0 +1,50 @@
+# Excluir archivos compilados locales
+target/
+!target/*.jar
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Maven
+.mvn/
+mvnw
+mvnw.cmd
+
+# IDEs
+.idea/
+.vscode/
+.eclipse/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Documentación
+*.md
+README.md
+docs/
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# Tests
+src/test/
+
+# Otros
+*.swp
+*.bak
+*~
