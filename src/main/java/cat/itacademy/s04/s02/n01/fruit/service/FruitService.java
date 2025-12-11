@@ -55,4 +55,13 @@ public class FruitService {
         Fruit updatedFruit = fruitRepository.save(fruit);
         return fruitMapper.toDTO(updatedFruit);
     }
+
+    @Transactional
+    public void deleteFruit(Long id) {
+        Fruit fruit = fruitRepository.findById(id)
+                .orElseThrow(() -> new FruitNotFoundException(
+                        "Fruit not found with id: " + id));
+
+        fruitRepository.delete(fruit);
+    }
 }

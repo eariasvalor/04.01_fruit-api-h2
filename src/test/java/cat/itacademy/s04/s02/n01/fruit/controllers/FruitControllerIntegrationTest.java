@@ -180,7 +180,7 @@ public class FruitControllerIntegrationTest {
 
         mockMvc.perform(get("/fruits/" + fruitId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Poma Actualitzada"))
+                .andExpect(jsonPath("$.name").value("Apple updated"))
                 .andExpect(jsonPath("$.weightInKilos").value(10));
     }
 
@@ -221,6 +221,70 @@ public class FruitControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("DELETE /fruits/{id} - must delete and return 204 No Content")
+    void testDeleteFruit_Success() throws Exception {
+        FruitRequestDTO request = new FruitRequestDTO("Apple", 5);
+
+        String createResponse = mockMvc.perform(post("/fruits")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        FruitResponseDTO createdFruit = objectMapper.readValue(
+                createResponse, FruitResponseDTO.class);
+        Long fruitId = createdFruit.getId();
+
+        mockMvc.perform(delete("/fruits/" + fruitId))
+                .andExpect(status().isNoContent());
+
+        mockMvc.perform(get("/fruits/" + fruitId))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("DELETE /fruits/{id} - must return 404 if it doesn't exist")
+    void testDeleteFruit_NotFound() throws Exception {
+        Long nonExistentId = 999L;
+
+        mockMvc.perform(delete("/fruits/" + nonExistentId))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value(
+                        containsString("Fruit not found")));
+    }
+
+    @Test
+    @DisplayName("DELETE /fruits/{id} - the list must be empty after deleting all")
+    void testDeleteAllFruits_EmptyList() throws Exception {
+        FruitRequestDTO fruit1 = new FruitRequestDTO("Apple", 5);
+        FruitRequestDTO fruit2 = new FruitRequestDTO("Banana", 3);
+
+        String response1 = mockMvc.perform(post("/fruits")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(fruit1)))
+                .andReturn().getResponse().getContentAsString();
+
+        String response2 = mockMvc.perform(post("/fruits")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(fruit2)))
+                .andReturn().getResponse().getContentAsString();
+
+        Long id1 = objectMapper.readValue(response1, FruitResponseDTO.class).getId();
+        Long id2 = objectMapper.readValue(response2, FruitResponseDTO.class).getId();
+
+        mockMvc.perform(delete("/fruits/" + id1))
+                .andExpect(status().isNoContent());
+
+        mockMvc.perform(delete("/fruits/" + id2))
+                .andExpect(status().isNoContent());
+
+        mockMvc.perform(get("/fruits"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
     }
 
 }
