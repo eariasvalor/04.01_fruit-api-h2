@@ -42,4 +42,17 @@ public class FruitService {
 
         return fruitMapper.toDTO(fruit);
     }
+
+    @Transactional
+    public FruitResponseDTO updateFruit(Long id, FruitRequestDTO request) {
+        Fruit fruit = fruitRepository.findById(id)
+                .orElseThrow(() -> new FruitNotFoundException(
+                        "Fruit not found with id: " + id));
+
+        fruit.setName(request.getName());
+        fruit.setWeightInKilos(request.getWeightInKilos());
+
+        Fruit updatedFruit = fruitRepository.save(fruit);
+        return fruitMapper.toDTO(updatedFruit);
+    }
 }
