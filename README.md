@@ -315,7 +315,7 @@ mvn clean install
 ./mvnw clean package
 
 # Run
-java -jar target/04.01_fruit-api-h2-0.0.1-SNAPSHOT.jar
+java -jar target/fruit-api-h2-0.0.1-SNAPSHOT.jar
 ```
 
 ### Option 3: From IDE
