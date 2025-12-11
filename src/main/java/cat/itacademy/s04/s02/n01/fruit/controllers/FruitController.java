@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/fruits")
 @RequiredArgsConstructor
@@ -21,5 +23,11 @@ public class FruitController {
             @Valid @RequestBody FruitRequestDTO request) {
         FruitResponseDTO response = fruitService.createFruit(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<FruitResponseDTO>> getAllFruits() {
+        List<FruitResponseDTO> fruits = fruitService.getAllFruits();
+        return ResponseEntity.ok(fruits);
     }
 }

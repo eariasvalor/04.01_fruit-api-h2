@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class FruitService {
@@ -21,5 +24,12 @@ public class FruitService {
         Fruit fruit = fruitMapper.toEntity(request);
         Fruit savedFruit = fruitRepository.save(fruit);
         return fruitMapper.toDTO(savedFruit);
+    }
+
+    @Transactional(readOnly = true)
+    public List<FruitResponseDTO> getAllFruits() {
+        return fruitRepository.findAll().stream()
+                .map(fruitMapper::toDTO)
+                .collect(Collectors.toList());
     }
 }
